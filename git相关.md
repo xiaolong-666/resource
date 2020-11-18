@@ -1,9 +1,74 @@
 # 关于git的日常使用
 
-## 打patch：
-1. 生成patch  
-	1.生成最近一次提交的patch： git format-patch HEAD^
-2. 检测是否能够打上patch
-	1. git apply --check 0001...		没有输出，即能正常打上
-3. 打patch 
-	1. git am 0001...
+## 日常使用
+1. 添加文件  
+>添加到Git仓库，分两步：  
+使用命令git add <file>，注意，可反复多次使用，添加多个文件；  
+使用命令git commit -m <message>，完成。
+
+2. 要随时掌握工作区的状态，使用git status命令。  
+如果git status告诉你有文件被修改过，用git diff可以查看修改内容。
+
+3. 版本回退  
+>HEAD指向的版本就是当前版本，因此，Git允许我们在版本的历史之间穿梭，使用命令git reset --hard commit_id。  
+穿梭前，用git log可以查看提交历史，以便确定要回退到哪个版本。  
+要重返未来，用git reflog查看命令历史，以便确定要回到未来的哪个版本。  
+
+4. 提交后，用git diff HEAD — <file>命令可以查看工作区和版本库里面最新版本的区别：
+
+5. 命令git checkout -- readme.txt
+>意思就是，把readme.txt文件在工作区的修改全部撤销，这里有两种情况：  
+一种是readme.txt自修改后还没有被放到暂存区，现在，撤销修改就回到和版本库一模一样的状态；  
+一种是readme.txt已经添加到暂存区后，又作了修改，现在，撤销修改就回到添加到暂存区后的状态。  
+总之，就是让这个文件回到最近一次git commit或git add时的状态。
+
+6. 用命令git reset HEAD <file>可以把暂存区的修改撤销掉（unstage），重新放回工作区
+
+7. git checkout — <file>其实是用版本库里的版本替换工作区的版本，无论工作区是修改还是删除，都可以“一键还原”。
+
+8. 要关联一个远程库，使用命令  
+git remote add origin git@server-name:path/repo-name.git；  
+关联后，使用命令git push -u origin master第一次推送master分支的所有内容；  
+此后，每次本地提交后，只要有必要，就可以使用命令git push origin master推送最新修改；  
+
+9. Git鼓励大量使用分支：  
+>查看分支：git branch  
+创建分支：git branch <name>  
+切换分支：git checkout <name>或者git switch <name>  
+创建+切换分支：git checkout -b <name>或者git switch -c <name>  
+合并某分支到当前分支：git merge <name>  
+删除分支：git branch -d <name>  
+
+10. 当手头工作没有完成时，先把工作现场git stash一下，然后去修复bug  
+修复后，再git stash pop，回到工作现场；
+
+
+
+## 打path
+1. 使用git format-patch生成所需要的patch:  
+>当前分支所有超前master的提交：  
+git format-patch -M master  
+某次提交以后的所有patch:  
+git format-patch 4e16 --4e16指的是commit名  
+从根到指定提交的所有patch:  
+git format-patch --root 4e16  
+某两次提交之间的所有patch:  
+git format-patch 365a..4e16 --365a和4e16分别对应两次提交的名称  
+某次提交（含）之前的几次提交：  
+git format-patch –n 07fe --n指patch数，07fe对应提交的名称  
+故，单次提交即为：  
+git format-patch -1 07fe
+
+`git format-patch HEAD^ `　　　　　　　　　　#生成最近的1次commit的patch  
+`git format-patch HEAD^^`　　　　　　　　　　#生成最近的2次commit的patch
+
+>git format-patch生成的补丁文件默认从1开始顺序编号，并使用对应提交信息中的第一行作为文
+件名。如果使用了-- numbered-files选项，则文件名只有编号，不包含提交信息；
+如果指定了--stdout选项，可指定输出位置，如当所有patch输出到一个文件；可指
+定-o <dir>指定patch的存放目录；
+
+
+2. 应用patch：
+先检查patch文件：git apply --stat newpatch.patch  
+检查能否应用成功：git apply --check newpatch.patch  
+打补丁：git am --signoff < newpatch.patch  
