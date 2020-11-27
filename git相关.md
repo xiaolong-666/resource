@@ -72,3 +72,11 @@ git format-patch -1 07fe
 先检查patch文件：git apply --stat newpatch.patch  
 检查能否应用成功：git apply --check newpatch.patch  
 打补丁：git am --signoff < newpatch.patch  
+
+## 变基操作(git rebase)  
+>1. git checkout dev2.0		#切换到需要合并的分支
+2. git rebase master	        #变基目的分支
+3. git checkout master		# 切换到目的分支
+4. git merge dev2.0		       #合并dev2.0上所有的信息到master上，即变基
+
+[参考链接](https://git-scm.com/book/zh/v2/Git-分支-变基)

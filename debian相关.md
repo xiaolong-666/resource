@@ -1,0 +1,3 @@
+# 安装编译依赖
+前提：仓库源使用deb-src http://...
+	sudo apt build-dep dde-file-manager
