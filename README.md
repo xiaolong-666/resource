@@ -6,6 +6,7 @@
 [git相关](git相关.md)  
 [推荐网址](推荐网址.md)  
 [shell常用技巧相关](shell常用技巧相关.md)  
+[Linux下zsh的自动补全](编写zsh的自动补全.md)
 
 # 赏心悦目
 ![放松一下](test.jpg)
