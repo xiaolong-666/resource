@@ -80,3 +80,44 @@ git format-patch -1 07fe
 4. git merge dev2.0		       #合并dev2.0上所有的信息到master上，即变基
 
 [参考链接](https://git-scm.com/book/zh/v2/Git-分支-变基)
+
+## 拉取一个仓库代码，上传到另一个仓库
+
+参考链接：[git基础-远程仓库的使用](https://git-scm.com/book/zh/v2/Git-%E5%9F%BA%E7%A1%80-%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93%E7%9A%84%E4%BD%BF%E7%94%A8)
+1. 先拉取代码，以gerrit上的dde为例
+```bash
+git clone "ssh://ut000585@gerrit.uniontech.com:29418/dde" && scp -p -P 29418 ut000585@gerrit.uniontech.com:hooks/commit-msg "dde/.git/hooks/"
+```
+2. 新建分支, 并切换
+```bash
+git checkout -b chengdu
+```
+3. 查看远程仓库地址
+```bash
+dde [chengdu●] git remote -v
+origin  ssh://ut000585@gerrit.uniontech.com:29418/dde (fetch)
+origin  ssh://ut000585@gerrit.uniontech.com:29418/dde (push)
+```
+4. 增加远程仓库地址，并取名
+```bash
+dde [chengdu●] git remote add cd git@gitlabcd.uniontech.com:deviceos/dde.git
+dde [chengdu●] git remote -v
+cd      git@gitlabcd.uniontech.com:deviceos/dde.git (fetch)
+cd      git@gitlabcd.uniontech.com:deviceos/dde.git (push)
+origin  ssh://ut000585@gerrit.uniontech.com:29418/dde (fetch)
+origin  ssh://ut000585@gerrit.uniontech.com:29418/dde (push)
+
+```
+5. 推送的新的仓库里面
+```bash
+dde [chengdu] git push cd chengdu 
+枚举对象: 73, 完成.
+对象计数中: 100% (73/73), 完成.
+使用 16 个线程进行压缩
+压缩对象中: 100% (28/28), 完成.
+写入对象中: 100% (73/73), 11.48 KiB | 11.48 MiB/s, 完成.
+总共 73 （差异 32），复用 61 （差异 26）
+To gitlabcd.uniontech.com:deviceos/dde.git
+ * [new branch]      chengdu -> chengdu
+
+```
